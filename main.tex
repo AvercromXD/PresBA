@@ -12,7 +12,7 @@
 \usepackage{pifont}
 \setbeamertemplate{navigation symbols}{}
 \usepackage[ngerman]{babel}
-\usepackage[style=verbose,backend=bibtex]{biblatex}
+\usepackage[backend=bibtex]{biblatex}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \setbeamertemplate{footline}
@@ -74,6 +74,44 @@
 	\end{center}
 \end{frame}
 
+\section{State of the Art}
+\begin{frame}{NBV: Object Reconstruction}
+	\begin{block}{Klassische Ansätze}
+		\begin{itemize}
+			\item Roboter mit Tiefensensor
+			\item Generierung von Kandidaten Position, meist auf Kugel um Objektzentrum
+			\item Testen der Kandidaten auf utility function
+			\item Zum besten Kandidaten bewegen
+			\item Nutzen meist Voxel-Karte (Octomap) und Bounding Box um Objekt
+		\end{itemize}
+		\cite{zeng_view_2020}
+	\end{block}
+	\begin{exampleblock}{Machine-Learning Ansätze}
+		\begin{itemize}
+			\item Nächste Sensorpose durch Punktwolke oder Voxel-Karte vorhersagen
+			\item PC-NBV \cite{zeng_pc-nbv_2020}, NBV-Net \cite{mendoza_supervised_2020}
+			\item Bounding Box
+		\end{itemize}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{NBV: Object Reconstruction}
+	\begin{block}{Unterschiede zu meinem Ansatz}
+		\begin{itemize}
+			\item keine Bounding Box/ keine Information über Größe des Objekts
+			\item VDB-Mapping
+		\end{itemize}
+	\end{block}
+	\begin{exampleblock}{Herausforderungen}
+		\begin{itemize}
+			\item besetzte Voxel entweder Teil des Objekts oder Teil der Umgebung
+			\item mehr Information zu überprüfen $\to$ höhere Laufzeit
+			\item Generierung von Kandidaten auf Kugel nicht möglich, da kein Objektzentrum und keine Objektdimension bekannt
+		\end{itemize}
+	\end{exampleblock}
+
+\end{frame}
+
 \section{Algorithmen}
 \begin{frame}{Algorithmen}
 	\begin{algorithm}[H]
@@ -99,8 +137,8 @@
 		\begin{itemize}
 			\item unbekannte Voxel, die von einem anderen Punkt als erste gesehen werden
 			\item unbekannte Voxel benachbart zu einem freien Voxel
-			\item eingeführt von Vasquez et al.\footcite{vasquez-gomez_vpl_2020}
 		\end{itemize}
+		\cite{vasquez-gomez_vpl_2020}
 	\end{exampleblock}
 	\begin{exampleblock}{Frontier Voxel}
 		\begin{itemize}
@@ -108,6 +146,7 @@
 			\item benachbarte Frontier Voxel bilden eine Frontier
 
 		\end{itemize}
+		\cite{vasquez-gomez_vpl_2020}
 	\end{exampleblock}
 \end{frame}
 
@@ -115,7 +154,7 @@
 	\centering
 	\begin{figure}
 		\includegraphics[width=0.5\textwidth]{Graphics/vasquez.png}
-		\caption{occupied voxel blue, unknown voxel yellow, \textbf{visible unknown} voxel pink, \textbf{frontier} voxel red, }\footcite{vasquez-gomez_vpl_2020}
+		\caption{occupied voxel blue, unknown voxel yellow, \textbf{visible unknown} voxel pink, \textbf{frontier} voxel red \cite{vasquez-gomez_vpl_2020}}
 	\end{figure}
 \end{frame}
 
@@ -156,6 +195,13 @@
 \begin{frame}{Algorithmen}
 	\begin{block}{Kandidaten Positionen generieren}
 
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{Graphics/view_point_gen_v2.png}
+		\end{center}
+		\begin{itemize}
+			\item Sampling zwischen fixen Distanzen, abhängig von aktueller Distanz $d$
+			\item Sampling zwischen maximalem Ausschlagswinkel $\alpha$
+		\end{itemize}
 	\end{block}
 
 \end{frame}
@@ -166,7 +212,7 @@
 		\begin{algorithmic}[2]
 			\Require candidates, surfaceVoxel
 			\For{c $\in$ candidates}
-			\State num\_surface, num\_seen\_surface, num\_seen\_unknown = 0
+			\State num\_surface = 0
 			\For{s $\in$ surfaceVoxel}
 			\If{isPartOfViewFrustum(s, c)}
 			\State num\_surface++
@@ -184,6 +230,7 @@
 		\caption{Evaluate Candidates Part 2}
 		\begin{algorithmic}[2]
 			\Require candidates, surfaceVoxel
+			\State num\_seen\_surface, num\_seen\_unknown = 0
 			\For{c $\in$ candidates}
 			\For{pixel $\in$ Sensor}
 			\State ray = rotateToPose(convertPixelToRay(pixel), c)
@@ -219,6 +266,17 @@
 \end{frame}
 \section{Probleme}
 \begin{frame}{Problem: Unknown Barrier}
-
+	\begin{block}{}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_v2.png}
+		\end{center}
+		\begin{itemize}
+			\item Alle Strahlen von neuer Kamera Position treffen auf unbekannte Voxel
+			\item Interessanter Bereich hinter Object
+			\item Je länger das Programm läuft desto komplizierter wird Körper hinter Objekt
+		\end{itemize}
+	\end{block}
 \end{frame}
+
+\printbibliography
 \end{document}
