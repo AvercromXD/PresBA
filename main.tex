@@ -13,9 +13,8 @@
 \setbeamertemplate{navigation symbols}{}
 \usepackage[ngerman]{babel}
 \usepackage[style=verbose,backend=bibtex]{biblatex}
-\usepackage{algorithm2e}
-\RestyleAlgo{ruled}
-
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \setbeamertemplate{footline}
 {
   \leavevmode%
@@ -38,6 +37,7 @@
 \institute{Karlsruhe Institute of Technology \and FZI Research Center for Information Technology}
 \date{\today}
 
+\bibliography{references.bib}
 \begin{document}
 \frame{\titlepage}
 \frame{\frametitle{Inhalt}\tableofcontents}
@@ -49,7 +49,7 @@
 			\begin{itemize}
 				\item autonom Bilder von Object aufnehmen
 				\item Bilder aus verschiedenen Perspektiven
-				\item Roboter (Spot, Turtlebot, etc.) muss nächste, vorteilhafte Perspektive berechnen
+				\item \textbf{Roboter (Spot, Turtlebot, etc.) muss nächste, vorteilhafte Perspektive berechnen}
 			\end{itemize}
 		\end{block}
 	\end{minipage}
@@ -69,23 +69,156 @@
 			\item Zur besten Position gehen
 		\end{itemize}
 	\end{block}
-	\centering
-	\includegraphics[width=0.9\textwidth]{Graphics/flow_chart.png}
+	\begin{center}
+		\includegraphics[width=0.7\textwidth]{Graphics/flow_chart_v2.png}
+	\end{center}
 \end{frame}
 
 \section{Algorithmen}
 \begin{frame}{Algorithmen}
-	\begin{algorithm}
-		\KwData{pixel_x, pixel_y: int}
-		ray = convertPixelToRay(pixel_x, pixel_y)\;
-		makeScan(), makeImage()\;
-		origin = raytrace(camera.position, ray)\;
-		\While{True}{
-			occupied, frontier_voxel =  breadthFirstSearch(origin)\;
-			frontiers = groupFrontiers(frontier_voxel)\;
-		}
+	\begin{algorithm}[H]
+		\caption{NBV}
+		\begin{algorithmic}[1]
+			\Require pixel: Tuple$<$int$ >$, thresh
+			\State ray = convertPixelToRay(pixel)
+			\State scan()
+			\State origin = raytrace(camera.position, ray)
+			\While{eval $>$ thresh}
+			\State scan()
+			\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
+			\State frontiers = groupFrontiers(frontierVoxel)
+			\State candidates = generateCandidates(frontiers)
+			\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
+			\State moveTo(c)
+			\EndWhile
+		\end{algorithmic}
 	\end{algorithm}
 \end{frame}
+\begin{frame}{Definitionen}
+	\begin{exampleblock}{Visible unknown Voxel}
+		\begin{itemize}
+			\item unbekannte Voxel, die von einem anderen Punkt als erste gesehen werden
+			\item unbekannte Voxel benachbart zu einem freien Voxel
+			\item eingeführt von Vasquez et al.\footcite{vasquez-gomez_vpl_2020}
+		\end{itemize}
+	\end{exampleblock}
+	\begin{exampleblock}{Frontier Voxel}
+		\begin{itemize}
+			\item visible unknown Voxel, die benachbart zu besetzen Voxel sind
+			\item benachbarte Frontier Voxel bilden eine Frontier
 
+		\end{itemize}
+	\end{exampleblock}
+\end{frame}
 
+\begin{frame}{}
+	\centering
+	\begin{figure}
+		\includegraphics[width=0.5\textwidth]{Graphics/vasquez.png}
+		\caption{occupied voxel blue, unknown voxel yellow, \textbf{visible unknown} voxel pink, \textbf{frontier} voxel red, }\footcite{vasquez-gomez_vpl_2020}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Algorithmen}
+	\begin{exampleblock}{Frontier Voxel}
+		\begin{itemize}
+			\item unbekannte Voxel, die benachbart zu freien \textbf{und} besetzen Voxel sind
+			\item benachbarte Frontier Voxel bilden eine Frontier
+		\end{itemize}
+	\end{exampleblock}
+
+	\begin{block}{1. Breitensuche}
+		\begin{itemize}
+			\item Finde alle besetzen Voxel, die über besetze Voxel mit Origin verbunden sind
+			\item Findet die bisher bekannte Oberfläche
+			\item Filtert den Boden heraus
+			\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Algorithmen}
+	\begin{exampleblock}{Frontier Voxel}
+		\begin{itemize}
+			\item unbekannte Voxel, die benachbart zu freien \textbf{und} besetzen Voxel sind
+			\item benachbarte Frontier Voxel bilden eine Frontier
+		\end{itemize}
+	\end{exampleblock}
+	\begin{block}{2. Breitensuche: Frontier Voxel gruppieren}
+		\begin{itemize}
+			\item 2 verschachtelte Breitensuchen
+			\item gruppiert alle benachbarten Frontier Voxel zu einer Frontier
+			\item Berechnet Zentrum der Frontier
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Algorithmen}
+	\begin{block}{Kandidaten Positionen generieren}
+
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{Algorithmen}
+	\begin{algorithm}[H]
+		\caption{Evaluate Candidates Part 1}
+		\begin{algorithmic}[2]
+			\Require candidates, surfaceVoxel
+			\For{c $\in$ candidates}
+			\State num\_surface, num\_seen\_surface, num\_seen\_unknown = 0
+			\For{s $\in$ surfaceVoxel}
+			\If{isPartOfViewFrustum(s, c)}
+			\State num\_surface++
+			\EndIf
+			\EndFor
+			\EndFor
+
+		\end{algorithmic}
+	\end{algorithm}
+
+\end{frame}
+
+\begin{frame}{Algorithmen}
+	\begin{algorithm}[H]
+		\caption{Evaluate Candidates Part 2}
+		\begin{algorithmic}[2]
+			\Require candidates, surfaceVoxel
+			\For{c $\in$ candidates}
+			\For{pixel $\in$ Sensor}
+			\State ray = rotateToPose(convertPixelToRay(pixel), c)
+			\State point = {\color{blue}raytraceInRange(c, ray)}
+			\If {point $\in$ surfaceVoxel}
+			\State num\_seen\_surface++
+			\EndIf
+			\If {point is unknown}
+			\State num\_seen\_unknown++
+			\EndIf
+			\EndFor
+			\EndFor
+
+		\end{algorithmic}
+	\end{algorithm}
+
+\end{frame}
+
+\begin{frame}{Evaluation}
+	\begin{block}{}
+		Für ein Kandidaten $v$:
+		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{\text{num\_seen\_unknown(v)}}{1 + \text{max\_seen\_unknown(v)}} \cdot (\cfrac{\text{num\_surface(v)}}{\text{num\_surface(v)}})^2 \cdot r(v) \cdot p(v)\]
+		Mit \[p(v) = \begin{cases}
+				1 & \quad \text{Wenn } v \text{ erreichbar ist} \\
+				0 & \quad \text{sonst}
+			\end{cases}\]
+		und \[r(v) = \begin{cases}
+				1 & \quad \text{Wenn  num\_surface\_seen} > \text{surfaceVoxel.size()} \cdot 0.1 \\
+				0 & \quad \text{sonst}
+			\end{cases}
+		\]
+	\end{block}
+\end{frame}
+\section{Probleme}
+\begin{frame}{Problem: Unknown Barrier}
+
+\end{frame}
 \end{document}
