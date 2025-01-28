@@ -33,23 +33,22 @@
 }
 \title{Autonomous Object Inspection with Mobile Robots for 3D Reconstruction and Image Data Acquisition}
 \author{Ian Schmetkamp \inst{1} \\ \textbf{Advisor:} Philip Keller \inst{2} \\ \textbf{Supervisor:} Prof. Dr.-Ing. Rüdiger Dillmann \inst{2}}
-\subtitle{Bachelor Thesis}
-\institute{Karlsruhe Institute of Technology \and FZI Research Center for Information Technology}
+\institute{\inst{1} Karlsruhe Institute of Technology \and \inst{2} FZI Research Center for Information Technology}
 \date{\today}
 
 \bibliography{references.bib}
 \begin{document}
 \frame{\titlepage}
-\frame{\frametitle{Inhalt}\tableofcontents}
 
 \section{Allgemeines}
-\begin{frame}{Aufgabe}
+\begin{frame}{Motivation}
 	\begin{minipage}{0.55 \textwidth}
 		\begin{block}{Ziel}
 			\begin{itemize}
-				\item autonom Bilder von Object aufnehmen
+				\item autonom Bilder von Objekt aufnehmen
 				\item Bilder aus verschiedenen Perspektiven
-				\item \textbf{Roboter (Spot, Turtlebot, etc.) muss nächste, vorteilhafte Perspektive berechnen}
+				\item Bilder als Training für Perzeptionsmodellen
+				\item Soll auf verschiedenen Robotern laufen (Spot, Turtlebot, etc.)
 			\end{itemize}
 		\end{block}
 	\end{minipage}
@@ -60,9 +59,10 @@
 	\end{minipage}
 \end{frame}
 
-\begin{frame}{Ansatz}
-	\begin{block}{Ansatz}
+\begin{frame}{State-of-the-Art}
+	\begin{block}{Allgemeines Vorgehen}
 		\begin{itemize}
+			\item \textbf{Sensor:} Tiefenkamera
 			\item Mögliche Positionen evaluieren
 			\item Abschätzen wie viel Informationen in möglicher Position gesehen wird (Stichwort: Next-Best-View)
 			\item Andere Faktoren für Positionen evaluieren (Distanz, Überlappung, Sichtbarkeit des Bekannten etc.)
@@ -75,64 +75,33 @@
 \end{frame}
 
 \section{State of the Art}
-\begin{frame}{NBV: Object Reconstruction}
+\begin{frame}{State-of-the-Art: NBV}
 	\begin{block}{Klassische Ansätze}
 		\begin{itemize}
-			\item Roboter mit Tiefensensor
-			\item Generierung von Kandidaten Position, meist auf Kugel um Objektzentrum
+			\item \textbf{Annahme:} Tiefensensor, Größe des Objekts bekannt (Bounding Box)
+			\item Generierung von Kandidaten Sensorpose, meist auf Kugel um Objektzentrum
 			\item Testen der Kandidaten auf utility function
-			\item Zum besten Kandidaten bewegen
-			\item Nutzen meist Voxel-Karte (Octomap) und Bounding Box um Objekt
+			\item Zur besten Kandidaten Sensorpose bewegen
+			\item \textbf{Repräsentation der Umgebung:} Octomap, ähnliche Voxelkarten
 		\end{itemize}
 		\cite{zeng_view_2020}
 	\end{block}
-	\begin{exampleblock}{Machine-Learning Ansätze}
-		\begin{itemize}
-			\item Nächste Sensorpose durch Punktwolke oder Voxel-Karte vorhersagen
-			\item PC-NBV \cite{zeng_pc-nbv_2020}, NBV-Net \cite{mendoza_supervised_2020}
-			\item Bounding Box
-		\end{itemize}
-	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{NBV: Object Reconstruction}
-	\begin{block}{Unterschiede zu meinem Ansatz}
+\begin{frame}{State-of-the-Art: NBV}
+	\begin{block}{Machine-Learning Ansätze}
 		\begin{itemize}
-			\item keine Bounding Box/ keine Information über Größe des Objekts
-			\item VDB-Mapping
+			\item \textbf{Annahme:} Trainingsdaten auf Basis von Punktwolke oder Voxelkarte
+			\item Trainingsdaten enthalten nächst-beste Sensorpose für aktuelle Sensorpose
+			\item Größe der Objekte meist fix
+			\item Nächste Sensorpose vorhersagen
+			\item PC-NBV \cite{zeng_pc-nbv_2020}, NBV-Net \cite{mendoza_supervised_2020}
+
 		\end{itemize}
 	\end{block}
-	\begin{exampleblock}{Herausforderungen}
-		\begin{itemize}
-			\item besetzte Voxel entweder Teil des Objekts oder Teil der Umgebung
-			\item mehr Information zu überprüfen $\to$ höhere Laufzeit
-			\item Generierung von Kandidaten auf Kugel nicht möglich, da kein Objektzentrum und keine Objektdimension bekannt
-		\end{itemize}
-	\end{exampleblock}
-
 \end{frame}
 
-\section{Algorithmen}
-\begin{frame}{Algorithmen}
-	\begin{algorithm}[H]
-		\caption{NBV}
-		\begin{algorithmic}[1]
-			\Require pixel: Tuple$<$int$ >$, thresh
-			\State ray = convertPixelToRay(pixel)
-			\State scan()
-			\State origin = raytrace(camera.position, ray)
-			\While{eval $>$ thresh}
-			\State scan()
-			\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
-			\State frontiers = groupFrontiers(frontierVoxel)
-			\State candidates = generateCandidates(frontiers)
-			\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
-			\State moveTo(c)
-			\EndWhile
-		\end{algorithmic}
-	\end{algorithm}
-\end{frame}
-\begin{frame}{Definitionen}
+\begin{frame}{State-of-the-Art: Definitionen}
 	\begin{exampleblock}{Visible unknown Voxel}
 		\begin{itemize}
 			\item unbekannte Voxel, die von einem anderen Punkt als erste gesehen werden
@@ -158,13 +127,31 @@
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Algorithmen}
-	\begin{exampleblock}{Frontier Voxel}
+\begin{frame}{Ansatz}
+	\begin{block}{Besonderheiten}
 		\begin{itemize}
-			\item unbekannte Voxel, die benachbart zu freien \textbf{und} besetzen Voxel sind
-			\item benachbarte Frontier Voxel bilden eine Frontier
+			\item keine Information über Größe des Objekts
+			\item VDB-Mapping statt OctoMap
 		\end{itemize}
-	\end{exampleblock}
+	\end{block}
+	\begin{algorithm}[H]
+		\caption{NBV}
+		\begin{algorithmic}[1]
+			\While{eval $>$ thresh}
+			\State $\dots$
+			\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
+			\State frontiers = groupFrontiers(frontierVoxel)
+			\State candidates = generateCandidates(frontiers)
+			\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
+			\State $\dots$
+			\EndWhile
+		\end{algorithmic}
+	\end{algorithm}
+
+\end{frame}
+
+
+\begin{frame}{Algorithmen}
 
 	\begin{block}{1. Breitensuche}
 		\begin{itemize}
@@ -174,22 +161,13 @@
 			\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
 		\end{itemize}
 	\end{block}
-\end{frame}
-
-\begin{frame}{Algorithmen}
-	\begin{exampleblock}{Frontier Voxel}
-		\begin{itemize}
-			\item unbekannte Voxel, die benachbart zu freien \textbf{und} besetzen Voxel sind
-			\item benachbarte Frontier Voxel bilden eine Frontier
-		\end{itemize}
-	\end{exampleblock}
-	\begin{block}{2. Breitensuche: Frontier Voxel gruppieren}
+	\begin{exampleblock}{2. Breitensuche: Frontier Voxel gruppieren}
 		\begin{itemize}
 			\item 2 verschachtelte Breitensuchen
 			\item gruppiert alle benachbarten Frontier Voxel zu einer Frontier
 			\item Berechnet Zentrum der Frontier
 		\end{itemize}
-	\end{block}
+	\end{exampleblock}
 \end{frame}
 
 \begin{frame}{Algorithmen}
@@ -206,62 +184,17 @@
 
 \end{frame}
 
-\begin{frame}{Algorithmen}
-	\begin{algorithm}[H]
-		\caption{Evaluate Candidates Part 1}
-		\begin{algorithmic}[2]
-			\Require candidates, surfaceVoxel
-			\For{c $\in$ candidates}
-			\State num\_surface = 0
-			\For{s $\in$ surfaceVoxel}
-			\If{isPartOfViewFrustum(s, c)}
-			\State num\_surface++
-			\EndIf
-			\EndFor
-			\EndFor
-
-		\end{algorithmic}
-	\end{algorithm}
-
-\end{frame}
-
-\begin{frame}{Algorithmen}
-	\begin{algorithm}[H]
-		\caption{Evaluate Candidates Part 2}
-		\begin{algorithmic}[2]
-			\Require candidates, surfaceVoxel
-			\State num\_seen\_surface, num\_seen\_unknown = 0
-			\For{c $\in$ candidates}
-			\For{pixel $\in$ Sensor}
-			\State ray = rotateToPose(convertPixelToRay(pixel), c)
-			\State point = {\color{blue}raytraceInRange(c, ray)}
-			\If {point $\in$ surfaceVoxel}
-			\State num\_seen\_surface++
-			\EndIf
-			\If {point is unknown}
-			\State num\_seen\_unknown++
-			\EndIf
-			\EndFor
-			\EndFor
-
-		\end{algorithmic}
-	\end{algorithm}
-
-\end{frame}
-
 \begin{frame}{Evaluation}
 	\begin{block}{}
+		Folgende Faktoren werden für die Utility Function gewertet:
+		\begin{itemize}
+			\item $d$ Distanz zum Kandidaten
+			\item $i$ abgeschätzter Informationgewinn, durch Anzahl der gefundenen unbekannten Voxel
+			\item $o$ Anzahl der im Sichtvolumen vorhandenen Oberflächen Voxel
+		\end{itemize}
+
 		Für ein Kandidaten $v$:
 		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{\text{num\_seen\_unknown(v)}}{1 + \text{max\_seen\_unknown(v)}} \cdot (\cfrac{\text{num\_surface(v)}}{\text{num\_surface(v)}})^2 \cdot r(v) \cdot p(v)\]
-		Mit \[p(v) = \begin{cases}
-				1 & \quad \text{Wenn } v \text{ erreichbar ist} \\
-				0 & \quad \text{sonst}
-			\end{cases}\]
-		und \[r(v) = \begin{cases}
-				1 & \quad \text{Wenn  num\_surface\_seen} > \text{surfaceVoxel.size()} \cdot 0.1 \\
-				0 & \quad \text{sonst}
-			\end{cases}
-		\]
 	\end{block}
 \end{frame}
 \section{Probleme}
