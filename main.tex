@@ -117,17 +117,13 @@
 	\begin{algorithm}[H]
 		\caption{NBV}
 		\begin{algorithmic}[1]
-			\Require pixel: Tuple$<$int$ >$, thresh
-			\State ray = convertPixelToRay(pixel)
-			\State scan()
-			\State origin = raytrace(camera.position, ray)
 			\While{eval $>$ thresh}
-			\State scan()
+			\State $\dots$
 			\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
 			\State frontiers = groupFrontiers(frontierVoxel)
 			\State candidates = generateCandidates(frontiers)
 			\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
-			\State moveTo(c)
+			\State $\dots$
 			\EndWhile
 		\end{algorithmic}
 	\end{algorithm}
@@ -252,13 +248,19 @@
 \begin{frame}{Evaluation}
 	\begin{block}{}
 		Für ein Kandidaten $v$:
-		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{\text{num\_seen\_unknown(v)}}{1 + \text{max\_seen\_unknown(v)}} \cdot (\cfrac{\text{num\_surface(v)}}{\text{num\_surface(v)}})^2 \cdot r(v) \cdot p(v)\]
-		Mit \[p(v) = \begin{cases}
+		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{n_u(v)}{1 + \max_{v'}(n_{u}(v'))} \cdot (\cfrac{n_s(v)}{\sum_{v'}n_s(v')})^2 \cdot r(v) \cdot p(v)\]
+		Mit
+		\begin{itemize}
+			\item $n_u$ Anzahl getroffener unbekannter Voxel,
+			\item $n_{r,s}$ Anzahl getroffener surfaceVoxel,
+			\item $n_s$ Anzahl surfaceVoxel im Sichtkörper,
+		\end{itemize}
+		\[p(v) = \begin{cases}
 				1 & \quad \text{Wenn } v \text{ erreichbar ist} \\
 				0 & \quad \text{sonst}
 			\end{cases}\]
 		und \[r(v) = \begin{cases}
-				1 & \quad \text{Wenn  num\_surface\_seen} > \text{surfaceVoxel.size()} \cdot 0.1 \\
+				1 & \quad \text{Wenn } n_{r,s}(v) > \sum_{v'} n_{r,s}(v') \cdot 0.1 \\
 				0 & \quad \text{sonst}
 			\end{cases}
 		\]
