@@ -15,6 +15,7 @@
 \usepackage[backend=bibtex]{biblatex}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{tikz}
 \setbeamertemplate{footline}
 {
   \leavevmode%
@@ -31,14 +32,25 @@
   \end{beamercolorbox}}%
   \vskip0pt%
 }
+\date{}
 \title{Autonomous Object Inspection with Mobile Robots for 3D Reconstruction and Image Data Acquisition}
-\author{Ian Schmetkamp \inst{1} \\ \textbf{Advisor:} Philip Keller \inst{2} \\ \textbf{Supervisor:} Prof. Dr.-Ing. Rüdiger Dillmann \inst{2}}
-\institute{\inst{1} Karlsruhe Institute of Technology \and \inst{2} FZI Research Center for Information Technology}
-\date{\today}
+%\author{Ian Schmetkamp \inst{1} \\ \textbf{Advisor:} Philip Keller \inst{2} \\ \textbf{Supervisor:} Prof. Dr.-Ing. Rüdiger Dillmann \inst{2}}
+%\institute{\inst{1} Karlsruhe Institute of Technology \and \inst{2} FZI Research Center for Information Technology}
 
 \bibliography{references.bib}
 \begin{document}
-\frame{\titlepage}
+\begin{frame}
+	\centering
+	\maketitle
+	\vspace{-2cm}
+	Ian Schmetkamp\footnotemark[1] \\ \textbf{Betreuende Personen:} Philip Keller\footnotemark[2] \\ Prof. Dr.-Ing. Dillmann\footnotemark[2] \\ Prof. Dr. Beckert\footnotemark[1]
+	\vfill
+	\footnotesize{ \footnotemark[1]Karlsruher Institute für Technologie \\  \footnotemark[2]Forschungszentrum Informatik}
+	\vfill
+	\includegraphics[width=0.5\textwidth]{Graphics/tbandbunny.png}
+
+	\today
+\end{frame}
 
 \section{Allgemeines}
 \begin{frame}{Motivation}
@@ -60,7 +72,7 @@
 \end{frame}
 
 \begin{frame}{State-of-the-Art}
-	\begin{block}{Allgemeines Vorgehen}
+	\begin{block}{}
 		\begin{itemize}
 			\item \textbf{Sensor:} Tiefenkamera
 			\item Mögliche Positionen evaluieren
@@ -80,7 +92,7 @@
 		\begin{itemize}
 			\item \textbf{Annahme:} Tiefensensor, Größe des Objekts bekannt (Bounding Box)
 			\item Generierung von Kandidaten Sensorpose, meist auf Kugel um Objektzentrum
-			\item Testen der Kandidaten auf utility function
+			\item Testen der Kandidaten auf \textbf{utility function}
 			\item Zur besten Kandidaten Sensorpose bewegen
 			\item \textbf{Repräsentation der Umgebung:} Octomap, ähnliche Voxelkarten
 		\end{itemize}
@@ -120,11 +132,42 @@
 \end{frame}
 
 \begin{frame}{}
-	\centering
 	\begin{figure}
-		\includegraphics[width=0.5\textwidth]{Graphics/vasquez.png}
-		\caption{occupied voxel blue, unknown voxel yellow, \textbf{visible unknown} voxel pink, \textbf{frontier} voxel red \cite{vasquez-gomez_vpl_2020}}
+		%\begin{center}
+		\begin{minipage}[t]{0.7\textwidth}
+			\centering
+			\includegraphics[width=0.85\textwidth]{Graphics/vasquez.png}
+		\end{minipage}
+		%\end{center}
+		\hfill
+		\begin{minipage}[t]{0.29\textwidth}
+			\includegraphics[width=0.9\textwidth]{Graphics/legend.png}
+		\end{minipage}
+
+		\caption{\cite{vasquez-gomez_vpl_2020}}
 	\end{figure}
+	%\centering
+	%\begin{figure}
+	%	\includegraphics[width=0.5\textwidth]{Graphics/vasquez.png}
+	%	\includegraphics[width=0.3\textwidth]{Graphics/legend.png}
+	%	\caption{\cite{vasquez-gomez_vpl_2020}}
+	%\end{figure}
+\end{frame}
+
+\begin{frame}
+	\centering
+	\includegraphics[width=0.4\textwidth]{Graphics/bunny.png}
+
+	\begin{minipage}{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{Graphics/voxel_side.png}
+	\end{minipage}
+	%\end{center}
+	\hfill
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{Graphics/voxel_front.png}
+	\end{minipage}
+
 \end{frame}
 
 \begin{frame}{Ansatz}
@@ -134,19 +177,22 @@
 			\item VDB-Mapping statt OctoMap
 		\end{itemize}
 	\end{block}
-	\begin{algorithm}[H]
-		\caption{NBV}
-		\begin{algorithmic}[1]
-			\While{eval $>$ thresh}
-			\State $\dots$
-			\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
-			\State frontiers = groupFrontiers(frontierVoxel)
-			\State candidates = generateCandidates(frontiers)
-			\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
-			\State $\dots$
-			\EndWhile
-		\end{algorithmic}
-	\end{algorithm}
+	\begin{exampleblock}{}
+		\vspace{-0.5cm}
+		\begin{algorithm}[H]
+			\caption{NBV}
+			\begin{algorithmic}[1]
+				\While{eval $>$ thresh}
+				\State $\dots$
+				\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
+				\State frontiers = groupFrontiers(frontierVoxel)
+				\State candidates = generateCandidates(frontiers)
+				\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
+				\State $\dots$
+				\EndWhile
+			\end{algorithmic}
+		\end{algorithm}
+	\end{exampleblock}
 
 \end{frame}
 
@@ -187,28 +233,18 @@
 \begin{frame}{Evaluation}
 	\begin{block}{}
 		Folgende Faktoren werden für die Utility Function gewertet:
-
-		Für ein Kandidaten $v$:
-		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{n_u(v)}{1 + \max_{v'}(n_{u}(v'))} \cdot (\cfrac{n_s(v)}{\sum_{v'}n_s(v')})^2 \cdot r(v) \cdot p(v)\]
-		Mit
 		\begin{itemize}
-			\item $n_u$ Anzahl getroffener unbekannter Voxel,
-			\item $n_{r,s}$ Anzahl getroffener surfaceVoxel,
-			\item $n_s$ Anzahl surfaceVoxel im Sichtkörper,
+			\item $n_{u}$ Anzahl getroffener unbekannter Voxel, (Raytracing)
+			\item $n_s$ Anzahl Oberflächen-Voxel im Sichtkörper,
+			\item $d(v)$ Distanz des Pfades zur Kandidatenpose
+			\item $p(v) \in \{0,1\}$ Erreichbarkeit der Kandidatenpose
 		\end{itemize}
-		\[p(v) = \begin{cases}
-				1 & \quad \text{Wenn } v \text{ erreichbar ist} \\
-				0 & \quad \text{sonst}
-			\end{cases}\]
-		und \[r(v) = \begin{cases}
-				1 & \quad \text{Wenn } n_{r,s}(v) > \sum_{v'} n_{r,s}(v') \cdot 0.1 \\
-				0 & \quad \text{sonst}
-			\end{cases}
-		\]
+		Für ein Kandidaten $v$:
+		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{n_{u}(v)}{1 + \max_{v'}(n_{u}(v'))} \cdot (\cfrac{n_s(v)}{\sum_{v'}n_s(v')})^2 \cdot p(v)\]
 	\end{block}
 \end{frame}
-\section{Probleme}
-\begin{frame}{Problem: Unknown Barrier}
+\section{Herausforderungen}
+\begin{frame}{Herausforderungen: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_v2.png}
@@ -219,6 +255,11 @@
 			\item Je länger das Programm läuft desto komplizierter wird Körper hinter Objekt
 		\end{itemize}
 	\end{block}
+\end{frame}
+
+\begin{frame}{}
+	\centering
+	\Large{Danke für die Aufmerksamkeit!}
 \end{frame}
 
 \printbibliography
