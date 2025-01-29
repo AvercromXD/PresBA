@@ -166,6 +166,50 @@
 	\end{figure}
 \end{frame}
 
+
+\begin{frame}{Ansatz}
+	\begin{block}{Besonderheiten}
+		\begin{itemize}
+			\item keine Information über Größe des Objekts
+			\item VDB-Mapping statt OctoMap
+		\end{itemize}
+	\end{block}
+	\begin{exampleblock}{}
+	Solange bis der Informationsgewinn vernachlässigbar ist
+	\begin{enumerate}
+	   \item Oberflächen-Voxel und Frontier Voxel finden
+		\item Frontiers gruppieren
+		\item Kandidaten generieren
+		\item Kandidaten evaluieren und besten Kandidaten finden
+	\end{enumerate}
+	\end{exampleblock}
+
+	\begin{textblock*}{0.2\textwidth}(10cm, 3.6cm)
+		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	\end{textblock*}
+
+\end{frame}
+
+
+\begin{frame}{Schritt 1 \& 2}
+
+	\begin{block}{1. Breitensuche: Frontier-Voxel und Oberflächen-Voxel}
+		\begin{itemize}
+			\item Finde alle besetzen Voxel, die über besetze Voxel mit Origin verbunden sind
+			\item Findet die bisher bekannte Oberfläche
+			\item Filtert den Boden heraus
+			\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
+		\end{itemize}
+	\end{block}
+	\begin{exampleblock}{2. Breitensuche: Frontier Voxel gruppieren}
+		\begin{itemize}
+			\item 2 verschachtelte Breitensuchen
+			\item gruppiert alle benachbarten Frontier Voxel zu einer Frontier
+			\item Berechnet Zentrum der Frontier
+		\end{itemize}
+	\end{exampleblock}
+\end{frame}
+
 \begin{frame}
 	\vspace{-0.4cm}
 	\begin{figure}
@@ -185,59 +229,8 @@
 	\end{minipage}
 
 \end{frame}
-
-\begin{frame}{Ansatz}
-	\begin{block}{Besonderheiten}
-		\begin{itemize}
-			\item keine Information über Größe des Objekts
-			\item VDB-Mapping statt OctoMap
-		\end{itemize}
-	\end{block}
-	\begin{exampleblock}{}
-		\vspace{-0.5cm}
-		\begin{algorithm}[H]
-			\caption{NBV}
-			\begin{algorithmic}[1]
-				\While{eval $>$ thresh}
-				\State $\dots$
-				\State surfaceVoxel, frontierVoxel =  breadthFirstSearch(origin)
-				\State frontiers = groupFrontiers(frontierVoxel)
-				\State candidates = generateCandidates(frontiers)
-				\State eval, c = max(evaluateCandidates(candidates, surfaceVoxel))
-				\State $\dots$
-				\EndWhile
-			\end{algorithmic}
-		\end{algorithm}
-	\end{exampleblock}
-
-	\begin{textblock*}{0.2\textwidth}(10cm, 3.6cm)
-		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
-	\end{textblock*}
-
-\end{frame}
-
-
-\begin{frame}{Algorithmen}
-
-	\begin{block}{1. Breitensuche}
-		\begin{itemize}
-			\item Finde alle besetzen Voxel, die über besetze Voxel mit Origin verbunden sind
-			\item Findet die bisher bekannte Oberfläche
-			\item Filtert den Boden heraus
-			\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
-		\end{itemize}
-	\end{block}
-	\begin{exampleblock}{2. Breitensuche: Frontier Voxel gruppieren}
-		\begin{itemize}
-			\item 2 verschachtelte Breitensuchen
-			\item gruppiert alle benachbarten Frontier Voxel zu einer Frontier
-			\item Berechnet Zentrum der Frontier
-		\end{itemize}
-	\end{exampleblock}
-\end{frame}
-
-\begin{frame}{Algorithmen}
-	\begin{block}{Kandidaten Positionen generieren}
+\begin{frame}{Schritt 3: Kandidaten Positionen generieren}
+	\begin{block}{}
 
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{Graphics/view_point_gen_v2.png}
@@ -245,12 +238,13 @@
 		\begin{itemize}
 			\item Sampling zwischen fixen Distanzen, abhängig von aktueller Distanz $d$
 			\item Sampling zwischen maximalem Ausschlagswinkel $\alpha$
+			\item Alle Kandidaten werden evaluiert
 		\end{itemize}
 	\end{block}
 
 \end{frame}
 
-\begin{frame}{Evaluation}
+\begin{frame}{Schritt 4: Evaluation}
 	\begin{block}{}
 		Folgende Faktoren werden für die Utility Function gewertet:
 		\begin{itemize}
@@ -259,31 +253,39 @@
 			\item $d(v)$ Distanz des Pfades zur Kandidatenpose
 			\item $p(v) \in \{0,1\}$ Erreichbarkeit der Kandidatenpose
 		\end{itemize}
-		Für ein Kandidaten $v$:
-		\[f(v) = \cfrac{1}{1 + \text{d(v)}} \cdot \cfrac{n_{u}(v)}{1 + \max_{v'}(n_{u}(v'))} \cdot (\cfrac{n_s(v)}{\sum_{v'}n_s(v')})^2 \cdot p(v)\]
 	\end{block}
 \end{frame}
 \section{Herausforderungen}
-\begin{frame}{Herausforderungen: Unknown Barrier}
+\begin{frame}{Herausforderung: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
-			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_v2.png}
+			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_vscott_1.png}
 		\end{center}
 		\begin{itemize}
 			\item Alle Strahlen von neuer Kamera Position treffen auf unbekannte Voxel
-			\item Interessanter Bereich hinter Object
-			\item Je länger das Programm läuft desto komplizierter wird Körper hinter Objekt
+			\item Interessanter Bereich hinter Object minimieren
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-\begin{frame}{Herausforderungen: Unknown Barrier}
+\begin{frame}{Herausforderung: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
-			\includegraphics[width=0.3\textwidth]{Graphics/sphere.png}
+			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_vscott_2.png}
 		\end{center}
 		\begin{itemize}
-			\item \textbf{Vorübergehende Lösung:} Kugel um Origin mit Radius maximal Abstand zu einem Oberflächenvoxel \[r = max_s(||o-s||)\]
+			\item Alle Strahlen von neuer Kamera Position treffen auf unbekannte Voxel
+			\item Interessanter Bereich hinter Object minimieren
+		\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}{Herausforderung: Unknown Barrier}
+	\begin{block}{}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{Graphics/sphere.png}
+		\end{center}
+		\begin{itemize}
+			\item \textbf{Vorübergehende Lösung:} Kugel um Origin mit Radius maximal Abstand zu einem Oberflächenvoxel
 			\item \textbf{Vorteil:} Einfaches Raytracing, einfach zu berechnende Heuristik
 			\item \textbf{Nachteil:} Vermutlich zu starke Heuristik, vor allem für unsymmetrische Objekte
 		\end{itemize}
