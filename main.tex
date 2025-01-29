@@ -167,9 +167,13 @@
 \end{frame}
 
 \begin{frame}
-	\centering
-	\includegraphics[width=0.4\textwidth]{Graphics/bunny.png}
-
+	\vspace{-0.4cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.4\textwidth]{Graphics/bunny.png}
+		\caption{Bunny collada file provided by \cite{delmerico_comparison_2018}}
+	\end{figure}
+	\vspace{-0.2cm}
 	\begin{minipage}{0.49\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{Graphics/voxel_side.png}
@@ -273,9 +277,23 @@
 	\end{block}
 \end{frame}
 
+\begin{frame}{Herausforderungen: Unknown Barrier}
+	\begin{block}{}
+		\begin{center}
+			\includegraphics[width=0.3\textwidth]{Graphics/sphere.png}
+		\end{center}
+		\begin{itemize}
+			\item \textbf{Vorübergehende Lösung:} Kugel um Origin mit Radius maximal Abstand zu einem Oberflächenvoxel \[r = max_s(||o-s||)\]
+			\item \textbf{Vorteil:} Einfaches Raytracing, einfach zu berechnende Heuristik
+			\item \textbf{Nachteil:} Vermutlich zu starke Heuristik, vor allem für unsymmetrische Objekte
+		\end{itemize}
+	\end{block}
+\end{frame}
 \begin{frame}{}
 	\centering
 	\Large{Danke für die Aufmerksamkeit!}
+	\vfill
+	\includegraphics[width=0.5\textwidth]{Graphics/tb.png}
 \end{frame}
 
 \printbibliography
