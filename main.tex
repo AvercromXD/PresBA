@@ -16,6 +16,8 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage[absolute,overlay]{textpos}
 \setbeamertemplate{footline}
 {
   \leavevmode%
@@ -88,6 +90,12 @@
 
 \section{State of the Art}
 \begin{frame}{State-of-the-Art: NBV}
+	\vspace{-1cm}
+	\hfill
+	\begin{minipage}{0.2\textwidth}
+		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	\end{minipage}
+	\vspace{-0.5cm}
 	\begin{block}{Klassische Ansätze}
 		\begin{itemize}
 			\item \textbf{Annahme:} Tiefensensor, Größe des Objekts bekannt (Bounding Box)
@@ -98,9 +106,18 @@
 		\end{itemize}
 		\cite{zeng_view_2020}
 	\end{block}
+	\begin{textblock*}{0.2\textwidth}(10cm, 6.5cm)
+		\includegraphics[width=\textwidth]{Graphics/mapping_flow.png}
+	\end{textblock*}
 \end{frame}
 
 \begin{frame}{State-of-the-Art: NBV}
+	\vspace{-1cm}
+	\hfill
+	\begin{minipage}{0.2\textwidth}
+		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	\end{minipage}
+	\vspace{-0.5cm}
 	\begin{block}{Machine-Learning Ansätze}
 		\begin{itemize}
 			\item \textbf{Annahme:} Trainingsdaten auf Basis von Punktwolke oder Voxelkarte
@@ -133,25 +150,20 @@
 
 \begin{frame}{}
 	\begin{figure}
-		%\begin{center}
-		\begin{minipage}[t]{0.7\textwidth}
-			\centering
-			\includegraphics[width=0.85\textwidth]{Graphics/vasquez.png}
-		\end{minipage}
-		%\end{center}
-		\hfill
-		\begin{minipage}[t]{0.29\textwidth}
-			\includegraphics[width=0.9\textwidth]{Graphics/legend.png}
-		\end{minipage}
-
+		\hspace{2.2cm}
+		\begin{tikzpicture}
+			% Centered image
+			\node (main-image) at (current page.center) {
+				\includegraphics[width=6cm]{Graphics/vasquez.png} % Adjust width
+			};
+			% Secondary image at the top right of the centered image
+			\node[xshift=1.5cm, yshift=-0.9cm]
+			(secondary-image) at (main-image.north east){
+				\includegraphics[width=3cm]{Graphics/legend.png} % Smaller image
+			};
+		\end{tikzpicture}
 		\caption{\cite{vasquez-gomez_vpl_2020}}
 	\end{figure}
-	%\centering
-	%\begin{figure}
-	%	\includegraphics[width=0.5\textwidth]{Graphics/vasquez.png}
-	%	\includegraphics[width=0.3\textwidth]{Graphics/legend.png}
-	%	\caption{\cite{vasquez-gomez_vpl_2020}}
-	%\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -193,6 +205,10 @@
 			\end{algorithmic}
 		\end{algorithm}
 	\end{exampleblock}
+
+	\begin{textblock*}{0.2\textwidth}(10cm, 3.6cm)
+		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	\end{textblock*}
 
 \end{frame}
 
