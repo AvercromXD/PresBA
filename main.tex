@@ -74,18 +74,18 @@
 \end{frame}
 
 \begin{frame}{State-of-the-Art}
+	\begin{center}
+		\includegraphics[width=0.65\textwidth]{Graphics/flow_chart.png}
+	\end{center}
+
 	\begin{block}{}
 		\begin{itemize}
-			\item \textbf{Sensor:} Tiefenkamera
 			\item Mögliche Positionen evaluieren
 			\item Abschätzen wie viel Informationen in möglicher Position gesehen wird (Stichwort: Next-Best-View)
 			\item Andere Faktoren für Positionen evaluieren (Distanz, Überlappung, Sichtbarkeit des Bekannten etc.)
 			\item Zur besten Position gehen
 		\end{itemize}
 	\end{block}
-	\begin{center}
-		\includegraphics[width=0.7\textwidth]{Graphics/flow_chart.png}
-	\end{center}
 \end{frame}
 
 \section{State of the Art}
@@ -175,13 +175,13 @@
 		\end{itemize}
 	\end{block}
 	\begin{exampleblock}{}
-	Solange bis der Informationsgewinn vernachlässigbar ist
-	\begin{enumerate}
-	   \item Oberflächen-Voxel und Frontier Voxel finden
-		\item Frontiers gruppieren
-		\item Kandidaten generieren
-		\item Kandidaten evaluieren und besten Kandidaten finden
-	\end{enumerate}
+		Solange bis der Informationsgewinn vernachlässigbar ist
+		\begin{enumerate}
+			\item Oberflächen-Voxel und Frontier Voxel finden
+			\item Frontiers gruppieren
+			\item Kandidaten generieren
+			\item Kandidaten evaluieren und besten Kandidaten finden
+		\end{enumerate}
 	\end{exampleblock}
 
 	\begin{textblock*}{0.2\textwidth}(10cm, 3.6cm)
@@ -248,9 +248,9 @@
 	\begin{block}{}
 		Folgende Faktoren werden für die Utility Function gewertet:
 		\begin{itemize}
-			\item $n_{u}$ Anzahl getroffener unbekannter Voxel, (Raytracing)
+			\item $n_{u}$ Anzahl getroffener visible unknown Voxel, (Raytracing)
 			\item $n_s$ Anzahl Oberflächen-Voxel im Sichtkörper,
-			\item $d(v)$ Distanz des Pfades zur Kandidatenpose
+			\item $d(v)$ Distanz zur Kandidatenpose
 			\item $p(v) \in \{0,1\}$ Erreichbarkeit der Kandidatenpose
 		\end{itemize}
 	\end{block}
