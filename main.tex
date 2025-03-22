@@ -12,7 +12,7 @@
 \usepackage{pifont}
 \setbeamertemplate{navigation symbols}{}
 \usepackage[ngerman]{babel}
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=biber]{biblatex}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{tikz}
@@ -26,7 +26,7 @@
     \usebeamerfont{author in head/foot}Ian Schmetkamp%\insertshortauthor
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
-    \usebeamerfont{title in head/foot}Autonomous Object Inspection
+    \usebeamerfont{title in head/foot}Autonome Objekt Inspektion
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
     \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
@@ -35,7 +35,10 @@
   \vskip0pt%
 }
 \date{}
-\title{Autonomous Object Inspection with Mobile Robots for 3D Reconstruction and Image Data Acquisition}
+%\title{Autonomous Object Inspection with Mobile Robots for 3D Reconstruction and Image Data Acquisition}
+\title{\textbf{Bachelorarbeit:} \\ Autonome Objekt Inspektion mit mobilen Robotern }
+
+%{\small Autonomous Object Inspection with Mobile Robots for 3D Reconstruction and Image Data Acquisition}
 %\author{Ian Schmetkamp \inst{1} \\ \textbf{Advisor:} Philip Keller \inst{2} \\ \textbf{Supervisor:} Prof. Dr.-Ing. Rüdiger Dillmann \inst{2}}
 %\institute{\inst{1} Karlsruhe Institute of Technology \and \inst{2} FZI Research Center for Information Technology}
 
@@ -47,7 +50,7 @@
 	\vspace{-2cm}
 	Ian Schmetkamp\footnotemark[1] \\ \textbf{Betreuende Personen:} Philip Keller\footnotemark[2] \\ Prof. Dr.-Ing. Dillmann\footnotemark[2] \\ Prof. Dr. Beckert\footnotemark[1]
 	\vfill
-	\footnotesize{ \footnotemark[1]Karlsruher Institute für Technologie \\  \footnotemark[2]Forschungszentrum Informatik}
+	\footnotesize{ \footnotemark[1]Karlsruher Institut für Technologie \\  \footnotemark[2]Forschungszentrum Informatik}
 	\vfill
 	\includegraphics[width=0.5\textwidth]{Graphics/tbandbunny.png}
 
@@ -73,15 +76,15 @@
 	\end{minipage}
 \end{frame}
 
-\begin{frame}{State-of-the-Art}
+\begin{frame}{State of the Art}
 	\begin{center}
-		\includegraphics[width=0.65\textwidth]{Graphics/flow_chart.png}
+		\includegraphics[width=0.65\textwidth]{Graphics/flow_chart.pdf}
 	\end{center}
 
 	\begin{block}{}
 		\begin{itemize}
 			\item Mögliche Positionen evaluieren
-			\item Abschätzen wie viel Informationen in möglicher Position gesehen wird (Stichwort: Next-Best-View)
+			\item Abschätzen wie viel Informationen in möglicher Position gesehen wird (Next-Best-View)
 			\item Andere Faktoren für Positionen evaluieren (Distanz, Überlappung, Sichtbarkeit des Bekannten etc.)
 			\item Zur besten Position gehen
 		\end{itemize}
@@ -89,7 +92,7 @@
 \end{frame}
 
 \section{State of the Art}
-\begin{frame}{State-of-the-Art: NBV}
+\begin{frame}{State of the Art: NBV}
 	\vspace{-1cm}
 	\hfill
 	\begin{minipage}{0.2\textwidth}
@@ -102,7 +105,7 @@
 			\item Generierung von Kandidaten Sensorpose, meist auf Kugel um Objektzentrum
 			\item Testen der Kandidaten auf \textbf{utility function}
 			\item Zur besten Kandidaten Sensorpose bewegen
-			\item \textbf{Repräsentation der Umgebung:} Octomap, ähnliche Voxelkarten
+			\item \textbf{Repräsentation der Umgebung:} OctoMap, ähnliche Voxelkarten
 		\end{itemize}
 		\cite{zeng_view_2020}
 	\end{block}
@@ -111,7 +114,7 @@
 	\end{textblock*}
 \end{frame}
 
-\begin{frame}{State-of-the-Art: NBV}
+\begin{frame}{State of the Art: NBV}
 	\vspace{-1cm}
 	\hfill
 	\begin{minipage}{0.2\textwidth}
@@ -122,7 +125,6 @@
 		\begin{itemize}
 			\item \textbf{Annahme:} Trainingsdaten auf Basis von Punktwolke oder Voxelkarte
 			\item Trainingsdaten enthalten nächst-beste Sensorpose für aktuelle Sensorpose
-			\item Größe der Objekte meist fix
 			\item Nächste Sensorpose vorhersagen
 			\item PC-NBV \cite{zeng_pc-nbv_2020}, NBV-Net \cite{mendoza_supervised_2020}
 
@@ -130,15 +132,15 @@
 	\end{block}
 \end{frame}
 
-\begin{frame}{State-of-the-Art: Definitionen}
-	\begin{exampleblock}{Visible unknown Voxel}
+\begin{frame}{State of the Art: Definitionen}
+	\begin{exampleblock}{Visible unknown voxel (VUV)}
 		\begin{itemize}
 			\item unbekannte Voxel, die von einem anderen Punkt als erste gesehen werden
 			\item unbekannte Voxel benachbart zu einem freien Voxel
 		\end{itemize}
 		\cite{vasquez-gomez_vpl_2020}
 	\end{exampleblock}
-	\begin{exampleblock}{Frontier Voxel}
+	\begin{exampleblock}{Frontier voxel}
 		\begin{itemize}
 			\item visible unknown Voxel, die benachbart zu besetzen Voxel sind
 			\item benachbarte Frontier Voxel bilden eine Frontier
@@ -148,7 +150,7 @@
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{}
+\begin{frame}{State of the Art}
 	\begin{figure}
 		\hspace{2.2cm}
 		\begin{tikzpicture}
@@ -162,7 +164,7 @@
 				\includegraphics[width=3cm]{Graphics/legend.png} % Smaller image
 			};
 		\end{tikzpicture}
-		\caption{\cite{vasquez-gomez_vpl_2020}}
+		\caption{ Abbildung von Vasquez-Gomez et al. \cite{vasquez-gomez_vpl_2020}}
 	\end{figure}
 \end{frame}
 
@@ -184,18 +186,36 @@
 		\end{enumerate}
 	\end{exampleblock}
 
+
 	\begin{textblock*}{0.2\textwidth}(10cm, 3.6cm)
 		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
 	\end{textblock*}
 
 \end{frame}
 
+\begin{frame}{Ansatz}
+	\begin{minipage}{0.59\textwidth}
+		\begin{block}{Zweite Phase}
+			\begin{itemize}
+				\item Tiefeninformation $\neq$ Bilder
+				\item Algorithmus hört häufig auf bevor Objekt von allen Seiten gesehen wurde
+				\item Zweite Phase, die Lücken füllt
+				\item \textbf{Annahme:} Durch erste Phase sind grobe Dimensionen bekannt
+			\end{itemize}
+		\end{block}
+	\end{minipage}
+	\begin{minipage}{0.4\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{Graphics/bunny_sphere_unknown_views.pdf}
+	\end{minipage}
+\end{frame}
 
-\begin{frame}{Schritt 1 \& 2}
+
+\begin{frame}{Erste Phase: Schritt 1 \& 2}
 
 	\begin{block}{1. Breitensuche: Frontier-Voxel und Oberflächen-Voxel}
 		\begin{itemize}
-			\item Finde alle besetzen Voxel, die über besetze Voxel mit Origin verbunden sind
+			\item Finde alle besetzen Voxel, die über besetze Voxel mit Ursprung verbunden sind
 			\item Findet die bisher bekannte Oberfläche
 			\item Filtert den Boden heraus
 			\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
@@ -210,22 +230,22 @@
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Schritt 1 \& 2}
 	\vspace{-0.4cm}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.4\textwidth]{Graphics/bunny.png}
-		\caption{Bunny collada file provided by \cite{delmerico_comparison_2018}}
+		\includegraphics[width=0.35\textwidth]{Graphics/bunny.png}
+		\caption{Bunny collada Datei von \cite{delmerico_comparison_2018}}
 	\end{figure}
 	\vspace{-0.2cm}
-	\begin{minipage}{0.49\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{Graphics/voxel_side.png}
+	\centering
+	\begin{minipage}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{Graphics/frontiers_side.png}
 	\end{minipage}
 	%\end{center}
-	\hfill
-	\begin{minipage}{0.49\textwidth}
-		\includegraphics[width=\textwidth]{Graphics/voxel_front.png}
+	%\hfill
+	\begin{minipage}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{Graphics/frontiers_behind.png}
 	\end{minipage}
 
 \end{frame}
@@ -244,19 +264,24 @@
 
 \end{frame}
 
-\begin{frame}{Schritt 4: Evaluation}
-	\begin{block}{}
-		Folgende Faktoren werden für die Utility Function gewertet:
+\begin{frame}{Schritt 4: Informationsgewinn}
+	\begin{block}{Informationsgewinn abschätzen}
+		Informationsgewinn abschätzen:
 		\begin{itemize}
-			\item $n_{u}$ Anzahl getroffener visible unknown Voxel, (Raytracing)
-			\item $n_s$ Anzahl Oberflächen-Voxel im Sichtkörper,
-			\item $d(v)$ Distanz zur Kandidatenpose
-			\item $p(v) \in \{0,1\}$ Erreichbarkeit der Kandidatenpose
+			\item Ray tracing durch die VDB map von der Kandidatenpose
+			\item Strahlen gehen durch alle Pixel der Ausgabe (640x480)
+			\item Strahlen verfolgen bis besetzter Voxel getroffen wird
+			\item Zwei Möglichkeiten für unbekannte Voxel: \begin{itemize}
+				      \item Strahlenverfolgung stoppen wenn unbekannter Voxel getroffen wird (VUV IG)
+				      \item Strahlen weiter verfolgen und alle unbekannten Voxel zählen (Unknown IG)
+			      \end{itemize}
 		\end{itemize}
+
 	\end{block}
+
 \end{frame}
-\section{Herausforderungen}
-\begin{frame}{Herausforderung: Unknown Barrier}
+
+\begin{frame}{Informationsgewinn: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_vscott_1.png}
@@ -268,7 +293,7 @@
 	\end{block}
 \end{frame}
 
-\begin{frame}{Herausforderung: Unknown Barrier}
+\begin{frame}{Informationsgewinn: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_vscott_2.png}
@@ -279,18 +304,172 @@
 		\end{itemize}
 	\end{block}
 \end{frame}
-\begin{frame}{Herausforderung: Unknown Barrier}
-	\begin{block}{}
+
+\begin{frame}{Informationsgewinn: Heuristiken}
+	\begin{block}{\textbf{1. Lösung:} Kugel}
 		\begin{center}
 			\includegraphics[width=0.4\textwidth]{Graphics/sphere.png}
 		\end{center}
 		\begin{itemize}
-			\item \textbf{Vorübergehende Lösung:} Kugel um Origin mit Radius maximal Abstand zu einem Oberflächenvoxel
-			\item \textbf{Vorteil:} Einfaches Raytracing, einfach zu berechnende Heuristik
-			\item \textbf{Nachteil:} Vermutlich zu starke Heuristik, vor allem für unsymmetrische Objekte
+			\item  Kugel um Ursprung mit Radius maximal Abstand zu einem Oberflächenvoxel
+			\item \textbf{Vorteil:} Einfaches ray tracing, einfach zu berechnende Heuristik
 		\end{itemize}
 	\end{block}
 \end{frame}
+
+\begin{frame}{Informationsgewinn: Heuristiken}
+	\begin{block}{\textbf{1. Lösung:} Kugel}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{Graphics/sphere_ok.png}
+			\includegraphics[width=0.4\textwidth]{Graphics/sphere_too_big.png}
+		\end{center}
+		\begin{itemize}
+			\item Kugel um Ursprung mit Radius maximal Abstand zu einem Oberflächenvoxel
+			\item \textbf{Vorteil:} Einfaches ray tracing, einfach zu berechnende Heuristik
+			\item \textbf{Nachteil: Ungeeignet vor allem für unsymmetrische Objekte}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Informationsgewinn: Heuristiken}
+	\begin{block}{\textbf{2. Lösung:} Frustum}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{Graphics/frustum_2.png}
+		\end{center}
+		\begin{itemize}
+			\item Aktueller Sichtkörper der Kamera (View Frustum)
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Informationsgewinn: Heuristiken}
+
+	\begin{exampleblock}{\textbf{2. Lösung:} Frustum: Vor- und Nachteile}
+		\begin{itemize}
+			\item \textbf{Vorteil:} Im allgemeinen weniger falsch-ausgeschlossene Voxel
+			\item \textbf{Nachteile:} \begin{itemize}
+				      \item Sehr großer Bereich zur Suche $\rightarrow$ höhere Laufzeit
+				      \item Voxel hinter initialer Kameraposition sind unbekannt \\ $\rightarrow$ zweites lokales Maximum von unbekannten Voxeln
+			      \end{itemize}
+		\end{itemize}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Informationsgewinn: Heuristiken}
+	\begin{block}{\textbf{3. Lösung:} Reduced Frustum}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{Graphics/reduced_frustum.png}
+		\end{center}
+		\begin{itemize}
+			\item Aktueller Sichtkörper der Kamera reduziert auf das Objekt (Reduced Frustum)
+			\item \textbf{Vorteil:} Im allgemeinen weiniger falsch-ausgeschlossene Voxel \& kleiner als Sichtkörper
+			\item \textbf{Nachteil:} Voxel hinter initialer Kameraposition sind unbekannt
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Sichtkörper: Zweites Maximum}
+	\center
+	\includegraphics[width=0.65\textwidth]{Graphics/bunny_views_unknown_voxels.pdf}
+\end{frame}
+
+\begin{frame}{Schritt 4: Utility Function}
+
+	\begin{exampleblock}{Informationsgewinn}
+		Kombination aus Heuristiken und Informationsgewinn Strategien ergibt 6 Metriken:
+		\\ \{Kugel, Sichtkörper, Reduzierter Sichtkörper\} $\times$ \{VUV, Unknown\}
+	\end{exampleblock}
+	\begin{block}{Utility Function}
+		Folgende Faktoren werden für die Utility Function gewertet:
+		\begin{itemize}
+			\item $I(v)$ Informationsgewinn, durch ray tracing bestimmt (Metriken siehe oben)
+			\item $c(v)$ Cut-off Faktor, um abgeschnittene Bilder zu verhindern
+			\item $d(v)$ Distanz zur Kandidatenpose
+			\item $p(v) \in \{0,1\}$ Erreichbarkeit der Kandidatenpose
+			\item $F(v)$ Frontier Faktor
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\section{Experimente}
+\begin{frame}{Utility Function: Initialer Blickwinkel von der Kiste}
+	\centering
+	\includegraphics[width=0.65\textwidth]{Graphics/crate_allinone_first.pdf}
+\end{frame}
+
+%\begin{frame}{Utility Function: Letzter Blickwinkel von der Kiste}
+%	\centering
+%	\includegraphics[width=0.65\textwidth]{Graphics/crate_allinone_last.pdf}
+%\end{frame}
+
+\begin{frame}{Experimente: Objekte}
+
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}{0.45\textwidth}
+			\centering
+			\includegraphics[width=0.8\textwidth]{Graphics/bunny.png}
+			\caption{Bunny von \cite{noauthor_stanford_nodate}, Model von \cite{delmerico_comparison_2018}}
+		\end{subfigure}
+		\begin{subfigure}{0.45\textwidth}
+			\centering
+			\includegraphics[width=0.8\textwidth]{Graphics/crate}
+			\caption{Schwarze Kiste von \cite{GazeboFuel-OpenRobotics-Large-Crate}}
+		\end{subfigure}
+		\vspace{0.5cm}
+		\begin{subfigure}{0.45\textwidth}
+			\centering
+			\includegraphics[width=0.8\textwidth]{Graphics/box}
+			\caption{Kleine blaue Box von \cite{GazeboFuel-OpenRobotics-Small-Blue-Box}}
+		\end{subfigure}
+		\begin{subfigure}{0.45\textwidth}
+			\centering
+			\includegraphics[width=0.8\textwidth]{Graphics/drill}
+			\caption{Bohrmaschine von \cite{GazeboFuel-OpenRobotics-Black-and-Decker-Cordless-Drill}}
+		\end{subfigure}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Experimente: Ergebnisse}
+	\centering
+	\includegraphics[width=0.6\textwidth]{Graphics/all_total_times.pdf}
+	\includegraphics[width=0.6\textwidth]{Graphics/all_avg_times_frontiers.pdf}
+\end{frame}
+
+\begin{frame}{Experimente: Ergebnisse}
+	\centering
+	\includegraphics[width=0.9\textwidth]{Graphics/all_num_views.pdf}
+\end{frame}
+
+
+\begin{frame}{Experimente: Ergebnisse}
+	\centering
+	\includegraphics[width=0.4\textwidth]{Graphics/bunny_unknown_0_collage.jpg}
+	\includegraphics[width=0.59\textwidth]{Graphics/bunny_sphere_unknown_views.pdf}
+\end{frame}
+
+\begin{frame}{Herausforderungen und Ausblick}
+	\begin{block}{Herausforderungen}
+		\begin{itemize}
+			\item VDB map: Unbekannte voxel in bereits bekanntem Gebiet
+			\item Heuristiken unvorteilhaft gewählt
+			\item Abbruchkriterien
+		\end{itemize}
+
+	\end{block}
+
+	\begin{exampleblock}{Ausblick}
+		\begin{itemize}
+			\item Eigene Implementierung von VDB für den use-case angepasst
+			\item Bessere Heuristik, z.B. Kugel mit Zentrum der bekannten Voxel oder Object Detection BBox
+			\item Vergleich mit state-of-the-art Algorithmen
+			\item Port auf realen Roboter wie Spot
+		\end{itemize}
+	\end{exampleblock}
+
+\end{frame}
+
 \begin{frame}{}
 	\centering
 	\Large{Danke für die Aufmerksamkeit!}
