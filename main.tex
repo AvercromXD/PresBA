@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 \PassOptionsToClass{handout}{beamer}
 
 
@@ -52,7 +52,7 @@
 	\vfill
 	\footnotesize{ \footnotemark[1]Karlsruher Institut für Technologie \\  \footnotemark[2]Forschungszentrum Informatik}
 	\vfill
-	\includegraphics[width=0.5\textwidth]{Graphics/tbandbunny.png}
+	\includegraphics[width=0.4\textwidth]{Graphics/tbandbunny.png}
 
 	\today
 \end{frame}
@@ -76,120 +76,122 @@
 	\end{minipage}
 \end{frame}
 
-\begin{frame}{State of the Art}
-	\begin{center}
-		\includegraphics[width=0.65\textwidth]{Graphics/flow_chart.pdf}
-	\end{center}
-
-	\begin{block}{}
-		\begin{itemize}
-			\item Mögliche Positionen evaluieren
-			\item Abschätzen wie viel Informationen in möglicher Position gesehen wird (Next-Best-View)
-			\item Andere Faktoren für Positionen evaluieren (Distanz, Überlappung, Sichtbarkeit des Bekannten etc.)
-			\item Zur besten Position gehen
-		\end{itemize}
-	\end{block}
-\end{frame}
 
 \section{State of the Art}
 \begin{frame}{State of the Art: NBV}
-	\vspace{-1cm}
-	\hfill
-	\begin{minipage}{0.2\textwidth}
-		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	\begin{minipage}{0.49\textwidth}
+		\begin{block}{Klassische Ansätze}
+			\begin{itemize}
+				\item \textbf{Annahme:} Tiefensensor, Größe des Objekts bekannt (Bounding Box)
+				\item Generierung von Kandidaten Sensorpose, meist auf Kugel um Objektzentrum
+				\item Testen der Kandidaten auf \textbf{utility function}
+				\item Zur besten Kandidaten Sensorpose bewegen
+				\item \textbf{Repräsentation der Umgebung:} OctoMap
+			\end{itemize}
+			\cite{zeng_view_2020}
+		\end{block}
 	\end{minipage}
-	\vspace{-0.5cm}
-	\begin{block}{Klassische Ansätze}
-		\begin{itemize}
-			\item \textbf{Annahme:} Tiefensensor, Größe des Objekts bekannt (Bounding Box)
-			\item Generierung von Kandidaten Sensorpose, meist auf Kugel um Objektzentrum
-			\item Testen der Kandidaten auf \textbf{utility function}
-			\item Zur besten Kandidaten Sensorpose bewegen
-			\item \textbf{Repräsentation der Umgebung:} OctoMap, ähnliche Voxelkarten
-		\end{itemize}
-		\cite{zeng_view_2020}
-	\end{block}
-	\begin{textblock*}{0.2\textwidth}(10cm, 6.5cm)
-		\includegraphics[width=\textwidth]{Graphics/mapping_flow.png}
-	\end{textblock*}
+	\hfill
+	\begin{minipage}{0.49\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{Graphics/nbv_trad.jpg}
+		\cite{vasquez-gomez_volumetric_2014}
+
+	\end{minipage}
 \end{frame}
 
 \begin{frame}{State of the Art: NBV}
-	\vspace{-1cm}
-	\hfill
-	\begin{minipage}{0.2\textwidth}
-		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	\begin{minipage}{0.55\textwidth}
+		\begin{block}{Machine-Learning Ansätze}
+			\begin{itemize}
+				\item Trainingsdaten bestehen aus Voxelkarte/Punktwolke + nächste Sensorpose
+				\item Nächste Sensorpose vorhersagen
+				\item PC-NBV \cite{zeng_pc-nbv_2020}, NBV-Net \cite{mendoza_supervised_2020}
+			\end{itemize}
+		\end{block}
 	\end{minipage}
-	\vspace{-0.5cm}
-	\begin{block}{Machine-Learning Ansätze}
-		\begin{itemize}
-			\item \textbf{Annahme:} Trainingsdaten auf Basis von Punktwolke oder Voxelkarte
-			\item Trainingsdaten enthalten nächst-beste Sensorpose für aktuelle Sensorpose
-			\item Nächste Sensorpose vorhersagen
-			\item PC-NBV \cite{zeng_pc-nbv_2020}, NBV-Net \cite{mendoza_supervised_2020}
-
-		\end{itemize}
-	\end{block}
+	\hfill
+	\begin{minipage}{0.4\textwidth}
+		\includegraphics[width=1.0\textwidth]{Graphics/nbvnet.jpeg}
+	\end{minipage}
+	\centering
+	Abbildung von \cite{vasquez-gomez_next-best-view_2021}, blau besetzte Voxel, gelb unbekannte Voxel, roter Pfeil next-best-view
 \end{frame}
 
 \begin{frame}{State of the Art: Definitionen}
-	\begin{exampleblock}{Visible unknown voxel (VUV)}
-		\begin{itemize}
-			\item unbekannte Voxel, die von einem anderen Punkt als erste gesehen werden
-			\item unbekannte Voxel benachbart zu einem freien Voxel
-		\end{itemize}
-		\cite{vasquez-gomez_vpl_2020}
-	\end{exampleblock}
-	\begin{exampleblock}{Frontier voxel}
-		\begin{itemize}
-			\item visible unknown Voxel, die benachbart zu besetzen Voxel sind
-			\item benachbarte Frontier Voxel bilden eine Frontier
-
-		\end{itemize}
-		\cite{vasquez-gomez_vpl_2020}
-	\end{exampleblock}
+	\begin{minipage}{0.4\textwidth}
+		\begin{exampleblock}{Visible unknown voxel (VUV)}
+			\begin{itemize}
+				\item unbekannte Voxel, mit freien Nachbar
+			\end{itemize}
+		\end{exampleblock}
+		\begin{exampleblock}{Frontier voxel}
+			\begin{itemize}
+				\item visible unknown Voxel, mit besetzem Nachbar
+			\end{itemize}
+		\end{exampleblock}
+	\end{minipage}
+	\begin{minipage}{0.59\textwidth}
+		\centering
+		\begin{figure}
+			\hspace{2.2cm}
+			\begin{tikzpicture}
+				% Centered image
+				\node (main-image) at (current page.center) {
+					\includegraphics[width=6cm]{Graphics/vasquez.png} % Adjust width
+				};
+				% Secondary image at the top right of the centered image
+				\node[xshift=1.5cm, yshift=-0.9cm]
+				(secondary-image) at (main-image.north east){
+					\includegraphics[width=3cm]{Graphics/legend.png} % Smaller image
+				};
+			\end{tikzpicture}
+		\end{figure}
+	\end{minipage}
+	\centering
+	\vspace{1.5cm}
+	\cite{vasquez-gomez_vpl_2020}
 \end{frame}
+
 
 \begin{frame}{State of the Art}
-	\begin{figure}
-		\hspace{2.2cm}
-		\begin{tikzpicture}
-			% Centered image
-			\node (main-image) at (current page.center) {
-				\includegraphics[width=6cm]{Graphics/vasquez.png} % Adjust width
-			};
-			% Secondary image at the top right of the centered image
-			\node[xshift=1.5cm, yshift=-0.9cm]
-			(secondary-image) at (main-image.north east){
-				\includegraphics[width=3cm]{Graphics/legend.png} % Smaller image
-			};
-		\end{tikzpicture}
-		\caption{ Abbildung von Vasquez-Gomez et al. \cite{vasquez-gomez_vpl_2020}}
-	\end{figure}
-\end{frame}
-
-
-\begin{frame}{Ansatz}
-	\begin{block}{Besonderheiten}
+	\begin{block}{Wissen über Objekt}
 		\begin{itemize}
-			\item keine Information über Größe des Objekts
-			\item VDB-Mapping statt OctoMap
+			\item meiste Forschung geht davon aus dass Größe des Objekts bekannt ist (Bounding Box, Tisch etc.)
+			\item Vorwissen über Objekt notwendig
+			\item Roboter soll ohne Vorwissen, Objekt scannen
+			\item \textbf{Lösung ohne Vorwissen benötigt}
 		\end{itemize}
 	\end{block}
-	\begin{exampleblock}{}
-		Solange bis der Informationsgewinn vernachlässigbar ist
-		\begin{enumerate}
-			\item Oberflächen-Voxel und Frontier Voxel finden
-			\item Frontiers gruppieren
-			\item Kandidaten generieren
-			\item Kandidaten evaluieren und besten Kandidaten finden
-		\end{enumerate}
-	\end{exampleblock}
+\end{frame}
 
+\begin{frame}{Ansatz}
+	\centering
+	\includegraphics[width=1.0\textwidth]{Graphics/flow_chart.pdf}
+\end{frame}
 
-	\begin{textblock*}{0.2\textwidth}(10cm, 3.6cm)
-		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
-	\end{textblock*}
+\begin{frame}{Ansatz}
+	\begin{minipage}{0.49\textwidth}
+		\begin{exampleblock}{}
+			Solange bis der Informationsgewinn vernachlässigbar ist
+			\begin{enumerate}
+				\item Oberflächen-Voxel und Frontier Voxel finden
+				\item Frontiers gruppieren
+				\item Kandidaten generieren
+				\item Besten Kandidaten finden
+			\end{enumerate}
+		\end{exampleblock}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\textwidth}
+		\begin{center}
+			\includegraphics[width=1.0\textwidth]{Graphics/flow_chart_nbv.pdf}
+		\end{center}
+	\end{minipage}
+
+	%	\begin{textblock*}{0.2\textwidth}(0cm, 0cm)
+	%		\includegraphics[width=\textwidth]{Graphics/nbv_flow.png}
+	%	\end{textblock*}
 
 \end{frame}
 
@@ -212,48 +214,33 @@
 
 
 \begin{frame}{Erste Phase: Schritt 1 \& 2}
-
-	\begin{block}{1. Breitensuche: Frontier-Voxel und Oberflächen-Voxel}
-		\begin{itemize}
-			\item Finde alle besetzen Voxel, die über besetze Voxel mit Ursprung verbunden sind
-			\item Findet die bisher bekannte Oberfläche
-			\item Filtert den Boden heraus
-			\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
-		\end{itemize}
-	\end{block}
-	\begin{exampleblock}{2. Breitensuche: Frontier Voxel gruppieren}
-		\begin{itemize}
-			\item 2 verschachtelte Breitensuchen
-			\item gruppiert alle benachbarten Frontier Voxel zu einer Frontier
-			\item Berechnet Zentrum der Frontier
-		\end{itemize}
-	\end{exampleblock}
-\end{frame}
-
-\begin{frame}{Schritt 1 \& 2}
-	\vspace{-0.4cm}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.35\textwidth]{Graphics/bunny.png}
-		\caption{Bunny collada Datei von \cite{delmerico_comparison_2018}}
-	\end{figure}
-	\vspace{-0.2cm}
-	\centering
-	\begin{minipage}{0.4\textwidth}
-		\includegraphics[width=\textwidth]{Graphics/frontiers_side.png}
+	\begin{minipage}{0.59\textwidth}
+		\begin{block}{1.: Frontier-Voxel und Oberflächen-Voxel}
+			\begin{itemize}
+				\item Finde alle besetzen Voxel, die mit Ursprung verbunden sind
+				\item Findet die bisher bekannte Oberfläche
+				\item Filtert den Boden heraus
+				\item Markiert alle gefundenen unbekannte Voxel die freien Nachbarn haben
+			\end{itemize}
+		\end{block}
+		\begin{exampleblock}{2.: Frontier Voxel gruppieren}
+			\begin{itemize}
+				\item 2 verschachtelte Breitensuchen
+				\item gruppiert alle benachbarten Frontier Voxel zu einer Frontier
+				\item Berechnet Zentrum der Frontier
+			\end{itemize}
+		\end{exampleblock}
 	\end{minipage}
-	%\end{center}
-	%\hfill
-	\begin{minipage}{0.4\textwidth}
+	\hfill
+	\begin{minipage}{0.39\textwidth}
 		\includegraphics[width=\textwidth]{Graphics/frontiers_behind.png}
 	\end{minipage}
-
 \end{frame}
+
 \begin{frame}{Schritt 3: Kandidaten Positionen generieren}
 	\begin{block}{}
-
 		\begin{center}
-			\includegraphics[width=0.7\textwidth]{Graphics/view_point_gen_v2.png}
+			\includegraphics[width=0.5\textwidth]{Graphics/view_point_gen_v2.png}
 		\end{center}
 		\begin{itemize}
 			\item Sampling zwischen fixen Distanzen, abhängig von aktueller Distanz $d$
@@ -264,31 +251,36 @@
 
 \end{frame}
 
-\begin{frame}{Schritt 4: Informationsgewinn}
-	\begin{block}{Informationsgewinn abschätzen}
-		Informationsgewinn abschätzen:
+\begin{frame}{Schritt 4: Informationsgewinn abschätzen}
+	\begin{block}{}
 		\begin{itemize}
 			\item Ray tracing durch die VDB map von der Kandidatenpose
 			\item Strahlen gehen durch alle Pixel der Ausgabe (640x480)
 			\item Strahlen verfolgen bis besetzter Voxel getroffen wird
-			\item Zwei Möglichkeiten für unbekannte Voxel: \begin{itemize}
-				      \item Strahlenverfolgung stoppen wenn unbekannter Voxel getroffen wird (VUV IG)
-				      \item Strahlen weiter verfolgen und alle unbekannten Voxel zählen (Unknown IG)
-			      \end{itemize}
+			\item Zwei Möglichkeiten für unbekannte Voxel: VUV IG, Unknown IG
 		\end{itemize}
 
 	\end{block}
+	\begin{minipage}{0.49\textwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{Graphics/vuv_ig.pdf}
+		\textbf{VUV IG}
+	\end{minipage}
+	\begin{minipage}{0.49\textwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{Graphics/unknown_ig.pdf}
+		\textbf{Unknown IG}
+	\end{minipage}
 
 \end{frame}
 
 \begin{frame}{Informationsgewinn: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
-			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_vscott_1.png}
+			\includegraphics[width=0.5\textwidth]{Graphics/unknown_barrier_vscott_1.png}
 		\end{center}
 		\begin{itemize}
 			\item Alle Strahlen von neuer Kamera Position treffen auf unbekannte Voxel
-			\item Interessanter Bereich hinter Object minimieren
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -296,11 +288,10 @@
 \begin{frame}{Informationsgewinn: Unknown Barrier}
 	\begin{block}{}
 		\begin{center}
-			\includegraphics[width=0.7\textwidth]{Graphics/unknown_barrier_vscott_2.png}
+			\includegraphics[width=0.5\textwidth]{Graphics/unknown_barrier_vscott_2.png}
 		\end{center}
 		\begin{itemize}
 			\item Alle Strahlen von neuer Kamera Position treffen auf unbekannte Voxel
-			\item Interessanter Bereich hinter Object minimieren
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -308,25 +299,10 @@
 \begin{frame}{Informationsgewinn: Heuristiken}
 	\begin{block}{\textbf{1. Lösung:} Kugel}
 		\begin{center}
-			\includegraphics[width=0.4\textwidth]{Graphics/sphere.png}
+			\includegraphics[width=0.35\textwidth]{Graphics/sphere.png}
 		\end{center}
 		\begin{itemize}
 			\item  Kugel um Ursprung mit Radius maximal Abstand zu einem Oberflächenvoxel
-			\item \textbf{Vorteil:} Einfaches ray tracing, einfach zu berechnende Heuristik
-		\end{itemize}
-	\end{block}
-\end{frame}
-
-\begin{frame}{Informationsgewinn: Heuristiken}
-	\begin{block}{\textbf{1. Lösung:} Kugel}
-		\begin{center}
-			\includegraphics[width=0.4\textwidth]{Graphics/sphere_ok.png}
-			\includegraphics[width=0.4\textwidth]{Graphics/sphere_too_big.png}
-		\end{center}
-		\begin{itemize}
-			\item Kugel um Ursprung mit Radius maximal Abstand zu einem Oberflächenvoxel
-			\item \textbf{Vorteil:} Einfaches ray tracing, einfach zu berechnende Heuristik
-			\item \textbf{Nachteil: Ungeeignet vor allem für unsymmetrische Objekte}
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -334,25 +310,12 @@
 \begin{frame}{Informationsgewinn: Heuristiken}
 	\begin{block}{\textbf{2. Lösung:} Frustum}
 		\begin{center}
-			\includegraphics[width=0.5\textwidth]{Graphics/frustum_2.png}
+			\includegraphics[width=0.35\textwidth]{Graphics/frustum_2.png}
 		\end{center}
 		\begin{itemize}
-			\item Aktueller Sichtkörper der Kamera (View Frustum)
+			\item Aktueller Sichtkörper der Kamera (Frustum)
 		\end{itemize}
 	\end{block}
-\end{frame}
-
-\begin{frame}{Informationsgewinn: Heuristiken}
-
-	\begin{exampleblock}{\textbf{2. Lösung:} Frustum: Vor- und Nachteile}
-		\begin{itemize}
-			\item \textbf{Vorteil:} Im allgemeinen weniger falsch-ausgeschlossene Voxel
-			\item \textbf{Nachteile:} \begin{itemize}
-				      \item Sehr großer Bereich zur Suche $\rightarrow$ höhere Laufzeit
-				      \item Voxel hinter initialer Kameraposition sind unbekannt \\ $\rightarrow$ zweites lokales Maximum von unbekannten Voxeln
-			      \end{itemize}
-		\end{itemize}
-	\end{exampleblock}
 \end{frame}
 
 \begin{frame}{Informationsgewinn: Heuristiken}
@@ -362,23 +325,12 @@
 		\end{center}
 		\begin{itemize}
 			\item Aktueller Sichtkörper der Kamera reduziert auf das Objekt (Reduced Frustum)
-			\item \textbf{Vorteil:} Im allgemeinen weiniger falsch-ausgeschlossene Voxel \& kleiner als Sichtkörper
-			\item \textbf{Nachteil:} Voxel hinter initialer Kameraposition sind unbekannt
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-\begin{frame}{Sichtkörper: Zweites Maximum}
-	\center
-	\includegraphics[width=0.65\textwidth]{Graphics/bunny_views_unknown_voxels.pdf}
-\end{frame}
-
 \begin{frame}{Schritt 4: Utility Function}
 
-	\begin{exampleblock}{Informationsgewinn}
-		Kombination aus Heuristiken und Informationsgewinn Strategien ergibt 6 Metriken:
-		\\ \{Kugel, Sichtkörper, Reduzierter Sichtkörper\} $\times$ \{VUV, Unknown\}
-	\end{exampleblock}
 	\begin{block}{Utility Function}
 		Folgende Faktoren werden für die Utility Function gewertet:
 		\begin{itemize}
@@ -392,39 +344,36 @@
 \end{frame}
 
 \section{Experimente}
-\begin{frame}{Utility Function: Initialer Blickwinkel von der Kiste}
+\begin{frame}{Utility Function: Initialer Blickwinkel von einer Kiste}
 	\centering
-	\includegraphics[width=0.65\textwidth]{Graphics/crate_allinone_first.pdf}
+	\includegraphics[width=0.49\textwidth]{Graphics/crate_cands_first_unknown_1.pdf}
+	\includegraphics[width=0.49\textwidth]{Graphics/crate_utility_first_unknown_1.pdf}
 \end{frame}
 
-%\begin{frame}{Utility Function: Letzter Blickwinkel von der Kiste}
-%	\centering
-%	\includegraphics[width=0.65\textwidth]{Graphics/crate_allinone_last.pdf}
-%\end{frame}
 
 \begin{frame}{Experimente: Objekte}
 
 	\begin{figure}[h]
 		\centering
-		\begin{subfigure}{0.45\textwidth}
+		\begin{subfigure}{0.35\textwidth}
 			\centering
-			\includegraphics[width=0.8\textwidth]{Graphics/bunny.png}
+			\includegraphics[width=0.7\textwidth]{Graphics/bunny.png}
 			\caption{Bunny von \cite{noauthor_stanford_nodate}, Model von \cite{delmerico_comparison_2018}}
 		\end{subfigure}
-		\begin{subfigure}{0.45\textwidth}
+		\begin{subfigure}{0.35\textwidth}
 			\centering
-			\includegraphics[width=0.8\textwidth]{Graphics/crate}
+			\includegraphics[width=0.7\textwidth]{Graphics/crate}
 			\caption{Schwarze Kiste von \cite{GazeboFuel-OpenRobotics-Large-Crate}}
 		\end{subfigure}
 		\vspace{0.5cm}
-		\begin{subfigure}{0.45\textwidth}
+		\begin{subfigure}{0.35\textwidth}
 			\centering
-			\includegraphics[width=0.8\textwidth]{Graphics/box}
+			\includegraphics[width=0.7\textwidth]{Graphics/box}
 			\caption{Kleine blaue Box von \cite{GazeboFuel-OpenRobotics-Small-Blue-Box}}
 		\end{subfigure}
-		\begin{subfigure}{0.45\textwidth}
+		\begin{subfigure}{0.35\textwidth}
 			\centering
-			\includegraphics[width=0.8\textwidth]{Graphics/drill}
+			\includegraphics[width=0.7\textwidth]{Graphics/drill}
 			\caption{Bohrmaschine von \cite{GazeboFuel-OpenRobotics-Black-and-Decker-Cordless-Drill}}
 		\end{subfigure}
 	\end{figure}
@@ -433,40 +382,85 @@
 
 \begin{frame}{Experimente: Ergebnisse}
 	\centering
-	\includegraphics[width=0.6\textwidth]{Graphics/all_total_times.pdf}
-	\includegraphics[width=0.6\textwidth]{Graphics/all_avg_times_frontiers.pdf}
+	\includegraphics[width=0.49\textwidth]{Graphics/all_total_times.pdf}
+	\includegraphics[width=0.49\textwidth]{Graphics/all_avg_times_frontiers.pdf}
 \end{frame}
 
 \begin{frame}{Experimente: Ergebnisse}
 	\centering
-	\includegraphics[width=0.9\textwidth]{Graphics/all_num_views.pdf}
+	\includegraphics[width=0.7\textwidth]{Graphics/all_num_views.pdf}
 \end{frame}
 
-
-\begin{frame}{Experimente: Ergebnisse}
-	\centering
-	\includegraphics[width=0.4\textwidth]{Graphics/bunny_unknown_0_collage.jpg}
-	\includegraphics[width=0.59\textwidth]{Graphics/bunny_sphere_unknown_views.pdf}
-\end{frame}
-
-\begin{frame}{Herausforderungen und Ausblick}
-	\begin{block}{Herausforderungen}
+\begin{frame}{Heuristiken: Vor- und Nachteile}
+	\begin{block}{Kugel}
+		\begin{center}
+			\includegraphics[width=0.35\textwidth]{Graphics/sphere_ok.png}
+			\includegraphics[width=0.35\textwidth]{Graphics/sphere_too_big.png}
+		\end{center}
 		\begin{itemize}
-			\item VDB map: Unbekannte voxel in bereits bekanntem Gebiet
-			\item Heuristiken unvorteilhaft gewählt
-			\item Abbruchkriterien
+			\item Kugel um Ursprung mit Radius maximal Abstand zu einem Oberflächenvoxel
+			\item \textbf{Vorteil:} Einfaches ray tracing, einfach zu berechnende Heuristik
+			\item \textbf{Nachteil: Ungeeignet vor allem für unsymmetrische Objekte}
 		\end{itemize}
-
 	\end{block}
+\end{frame}
+\begin{frame}{Heuristiken: Vor- und Nachteile}
 
-	\begin{exampleblock}{Ausblick}
+	\begin{exampleblock}{Frustum}
+		\begin{minipage}{0.49\textwidth}
+			\begin{center}
+				\includegraphics[width=0.9\textwidth]{Graphics/frustum_2.png}
+			\end{center}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Vorteil:} Im allgemeinen weniger falsch-ausgeschlossene Voxel
+				\item \textbf{Nachteile:} \begin{itemize}
+					      \item Sehr großer Bereich zur Suche $\rightarrow$ höhere Laufzeit
+					      \item Voxel hinter initialer Kameraposition sind unbekannt \\ $\rightarrow$ zweites lokales Maximum von unbekannten Voxeln
+				      \end{itemize}
+			\end{itemize}
+		\end{minipage}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Heuristiken: Vor- und Nachteile}
+	\begin{block}{Reduced Frustum}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{Graphics/reduced_frustum.png}
+		\end{center}
 		\begin{itemize}
-			\item Eigene Implementierung von VDB für den use-case angepasst
-			\item Bessere Heuristik, z.B. Kugel mit Zentrum der bekannten Voxel oder Object Detection BBox
+			\item Aktueller Sichtkörper der Kamera reduziert auf das Objekt (Reduced Frustum)
+			\item \textbf{Vorteil:} Im allgemeinen weniger falsch-ausgeschlossene Voxel \& kleiner als Sichtkörper
+			\item \textbf{Nachteil:} Voxel hinter initialer Kameraposition sind unbekannt
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Heuristiken: Zweites Maximum}
+	\center
+	\includegraphics[width=0.7\textwidth]{Graphics/bunny_views_unknown_voxels.pdf}
+\end{frame}
+
+\begin{frame}{Experimente: Ergebnisse}
+	\centering
+	\includegraphics[width=0.3\textwidth]{Graphics/bunny_unknown_0_collage.jpg}
+	\includegraphics[width=0.45\textwidth]{Graphics/bunny_sphere_unknown_views.pdf}
+\end{frame}
+
+\begin{frame}{Ausblick}
+	\begin{block}{Ausblick}
+		\begin{itemize}
+			\item Andere Heuristik, z.B. \begin{itemize}
+				      \item Kugel mit Zentrum der bekannten Voxel
+				      \item Object Detection Model Bounding Box (YOLO)
+			      \end{itemize}
+			\item Abbruchkriterien besser anpassen an Objekte
 			\item Vergleich mit state-of-the-art Algorithmen
 			\item Port auf realen Roboter wie Spot
 		\end{itemize}
-	\end{exampleblock}
+	\end{block}
 
 \end{frame}
 
